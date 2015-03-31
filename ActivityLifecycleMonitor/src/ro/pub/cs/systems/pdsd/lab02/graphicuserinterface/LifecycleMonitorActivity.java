@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -74,9 +75,105 @@ public class LifecycleMonitorActivity extends Activity {
         okButton.setOnClickListener(buttonClickListener);
         Button cancelButton = (Button)findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
-        Log.d(Constants.TAG, "onCreate() method was invoked");
-    }    
+        Log.d(Constants.TAG, "onCreate() method was invoked for the first time");
+        
+        
+        if (savedInstanceState != null) {
+        	
+        	//verific daca metoda a mai fost apelata odata
+        	Log.d(Constants.TAG, "onCreate() method has been invoked before");
 
+        }
+    }
+    
+    
+    //suprascriere metode
+    @Override
+    protected void onRestart() {
+    	super.onRestart();
+    	Log.d(Constants.TAG, "onRestart() method was invoked");
+	}
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onStart() method was invoked");
+	}
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	Log.d(Constants.TAG, "onResume() method was invoked");
+	}
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	Log.d(Constants.TAG, "onPause() method was invoked");
+	}
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	Log.d(Constants.TAG, "onStop() method was invoked");
+	}
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	Log.d(Constants.TAG, "onDestroy() method was invoked");
+	}
+
+    
+    //salvare informatie daca este bifat checkbox-ul
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    	super.onSaveInstanceState(savedInstanceState);
+    	Log.d(Constants.TAG, "onSaveInstanceState() method was invoked");
+    	
+    	CheckBox rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+    	EditText usernametext = (EditText)findViewById(R.id.username_edit_text);
+    	EditText passwordtext = (EditText)findViewById(R.id.password_edit_text);
+    	
+    	if (rememberMeCheckBox.isChecked()) {
+    		savedInstanceState.putString(Constants.USERNAME_EDIT_TEXT, usernametext.getText().toString());
+    		savedInstanceState.putString(Constants.PASSWORD_EDIT_TEXT, passwordtext.getText().toString());
+    		savedInstanceState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, true);
+    	}
+	}
+    
+    //restaurare stare daca este bifat
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    	Log.d(Constants.TAG, "onRestoreInstanceState() method was invoked");
+    	
+    	String username = savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT);
+    	if (username != null) {
+    		EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+    		usernameEditText.setText(username);
+    	}
+    	String password = savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT);
+    	if (password != null) {
+    		EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+    		passwordEditText.setText(username);
+    	}
+    	if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+    		boolean rememberMe = savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX);
+    		CheckBox rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+    		rememberMeCheckBox.setChecked(rememberMe);
+    	}
+    	/*
+    	EditText usernametext = (EditText)findViewById(R.id.username_edit_text);
+    	EditText passswordtext = (EditText)findViewById(R.id.password_edit_text);
+    	CheckBox rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+    	
+    	if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+    		Boolean ischecked = savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX);
+    		
+    			if (ischecked)
+    				usernametext.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT));
+    				passswordtext.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT));
+    				rememberMeCheckBox.setChecked(ischecked);
+    			
+    	} */
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
